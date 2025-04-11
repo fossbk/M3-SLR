@@ -8,12 +8,12 @@ SLR faces significant hurdles, notably with Visually Indistinguishable Signs (VI
 ## Performance
  Model                         |   Dataset    | Top-1 | Top-5 | Checkpoint | 
 |------------------------------|--------------|-----------|-----------|------------|
-| UniFormer w MaxFlow MaskFeat | Multi-VSL200 |   86.37   |   96.94   | [link](https://drive.google.com/drive/folders/12dScaCjePvTyxvlWElGVTYv12UFcHN9U?usp=drive_link) |
-| UsimKD                       | Multi-VSL200 |   88.14   |   96.28   | [link](https://drive.google.com/drive/folders/12dScaCjePvTyxvlWElGVTYv12UFcHN9U?usp=drive_link) |
-| UF3V                         | Multi-VSL200 |   92.11   |   97.90   | [link](https://drive.google.com/drive/folders/12dScaCjePvTyxvlWElGVTYv12UFcHN9U?usp=drive_link) |
-| UniFormer w MaxFlow MaskFeat | MM-WLAuslan  |   71.39   |   87.87   | [link](https://drive.google.com/drive/folders/12dScaCjePvTyxvlWElGVTYv12UFcHN9U?usp=drive_link) |
-| UsimKD                       | MM-WLAuslan  |   --.--   |   --.--   | [link](https://drive.google.com/drive/folders/12dScaCjePvTyxvlWElGVTYv12UFcHN9U?usp=drive_link) |
-| UF3V                         | MM-WLAuslan  |   82.03   |   94.58   | [link](https://drive.google.com/drive/folders/12dScaCjePvTyxvlWElGVTYv12UFcHN9U?usp=drive_link) |
+| UniFormer w MaxFlow MaskFeat | Multi-VSL200 |   86.37   |   96.94   | [link](https://drive.google.com/drive/folders/1PQx1spmpH5Ih5lG4CorehDpN1pFjSs2H?usp=sharing) |
+| UsimKD                       | Multi-VSL200 |   88.14   |   96.28   | [link](https://drive.google.com/drive/folders/1PQx1spmpH5Ih5lG4CorehDpN1pFjSs2H?usp=sharing) |
+| UF3V                         | Multi-VSL200 |   92.11   |   97.90   | [link](https://drive.google.com/drive/folders/1PQx1spmpH5Ih5lG4CorehDpN1pFjSs2H?usp=sharing) |
+| UniFormer w MaxFlow MaskFeat | MM-WLAuslan  |   71.39   |   87.87   | [link](https://drive.google.com/drive/folders/1PQx1spmpH5Ih5lG4CorehDpN1pFjSs2H?usp=sharing) |
+| UsimKD                       | MM-WLAuslan  |   --.--   |   --.--   | [link](https://drive.google.com/drive/folders/1PQx1spmpH5Ih5lG4CorehDpN1pFjSs2H?usp=sharing) |
+| UF3V                         | MM-WLAuslan  |   82.03   |   94.58   | [link](https://drive.google.com/drive/folders/1PQx1spmpH5Ih5lG4CorehDpN1pFjSs2H?usp=sharing) |
 ## Data prepare
 Please follow the instruction in [DATA.md](DATA.md)
 ## Usage
