@@ -67,11 +67,6 @@ class Trainer:
             torch.save(model.state_dict(), path)
 
     def mixup_data(self, x, y, alpha=1.0, use_cuda=True):
-        '''Returns mixed inputs, pairs of targets, and lambda.
-        Nếu x là dict:
-            - Nếu có key 'clip': áp dụng mixup trên x['clip'].
-            - Nếu có các key 'rgb_left', 'rgb_center', 'rgb_right': áp dụng mixup trên từng tensor đó.
-        '''
         if alpha > 0:
             lam = np.random.beta(alpha, alpha)
         else:
@@ -97,7 +92,7 @@ class Trainer:
                 x['rgb_center'] = lam * x['rgb_center'] + (1 - lam) * x['rgb_center'][index, :]
                 x['rgb_right'] = lam * x['rgb_right'] + (1 - lam) * x['rgb_right'][index, :]
             else:
-                raise ValueError("Không nhận dạng được các key phù hợp trong input dict để áp dụng mixup.")
+                raise ValueError("Could not identify the appropriate keys in the input dict to apply mixup.")
         else:
             batch_size = x.size(0)
             if use_cuda:
@@ -138,8 +133,7 @@ class Trainer:
                     self.train_accs.append(train_acc)
                 else:
                     train_loss_log, train_loss, _, _, train_acc, val_loss, _, _, val_acc = self.train_epoch(train_loader, val_loader, epoch)
-            
-            # Lưu checkpoint hiện tại
+
             if self.k_fold is None:
                 checkpoint_path = f"checkpoints/{cfg['data']['model_name']}/" + cfg['training']['experiment_name'] + "/current_checkpoints.pth"
                 self.save_checkpoint(self.model, checkpoint_path)
@@ -153,10 +147,8 @@ class Trainer:
                     self.val_accs.append(val_acc)
                 
                 if self.evaluate_strategy == 'epoch':
-                    # Gọi EarlyStopping với cả val_loss và val_acc
                     self.early_stopping(val_loss=val_loss_log['classification_loss'], val_acc=val_acc, model=self.model)
-            
-            # Logging thông tin
+
             if epoch % cfg['training']['log_freq'] == 0:
                 print(f"[{epoch + 1}] TRAIN  loss: {train_loss / len(train_loader)} acc: {train_acc}")
                 self.logging.info(f"[{epoch + 1}] TRAIN  loss: {train_loss / len(train_loader)} acc: {train_acc}")
@@ -170,16 +162,13 @@ class Trainer:
                 print("")
                 self.logging.info("")
 
-            # Cập nhật lịch sử learning rate
             self.lr_progress.append(self.optimizer.param_groups[0]["lr"])
-            
-            # Kiểm tra dừng sớm
+
             if self.is_early_stopping and self.early_stopping.early_stop:
                 print("\n\n***Stop training***\n\n")
                 self.logging.info("\n\n***Stop training***\n\n")
                 break
-            
-            # Ghi log với wandb nếu có
+
             if self.k_fold is None:
                 if val_loader is not None:
                     self.wandb.log({
@@ -231,7 +220,6 @@ class Trainer:
         self.logging.info("\nTesting checkpointed models starting...\n")
         
         if test_loader:
-            # Đánh giá checkpoint dựa trên loss
             if self.k_fold is None:
                 loss_checkpoint_path = f"checkpoints/{cfg['data']['model_name']}/" + cfg['training']['experiment_name'] + "/best_checkpoints_loss.pth"
                 acc_checkpoint_path = f"checkpoints/{cfg['data']['model_name']}/" + cfg['training']['experiment_name'] + "/best_checkpoints_acc.pth"
@@ -239,7 +227,6 @@ class Trainer:
                 loss_checkpoint_path = f"checkpoints/{cfg['data']['model_name']}/" + cfg['training']['experiment_name'] + f"/best_checkpoints_fold_{self.k_fold}_loss.pth"
                 acc_checkpoint_path = f"checkpoints/{cfg['data']['model_name']}/" + cfg['training']['experiment_name'] + f"/best_checkpoints_fold_{self.k_fold}_acc.pth"
             
-            # Đánh giá checkpoint dựa trên loss
             print("\nEvaluating checkpoint with best validation loss...")
             self.logging.info("\nEvaluating checkpoint with best validation loss...\n")
             self.model.load_state_dict(torch.load(loss_checkpoint_path))
@@ -247,7 +234,6 @@ class Trainer:
             print("\nTesting accuracy (Best Loss Checkpoint):", eval_acc_loss)
             self.logging.info(f"\nTesting accuracy (Best Loss Checkpoint): {eval_acc_loss}")
 
-            # Đánh giá checkpoint dựa trên accuracy
             print("\nEvaluating checkpoint with best validation accuracy...")
             self.logging.info("\nEvaluating checkpoint with best validation accuracy...\n")
             self.model.load_state_dict(torch.load(acc_checkpoint_path))
@@ -377,11 +363,7 @@ class Trainer:
         
         return loss_log,running_loss, pred_correct, pred_all, (pred_correct / pred_all)
     
-    def train_epoch_maskfeat(self, dataloader, epoch):  # Thêm tham số epoch
-        """
-        Huấn luyện mô hình MaskFeat cho một epoch.
-        Dữ liệu: dict với key 'clip' và 'mask'
-        """
+    def train_epoch_maskfeat(self, dataloader, epoch): 
         self.model.train()
         running_loss = 0.0
         loss_log = {}
@@ -511,27 +493,20 @@ class Trainer:
         with torch.no_grad():
             for i, data in enumerate(tqdm(dataloader)):
                 inputs, labels = data
-                # Đảm bảo dữ liệu được chuyển đến thiết bị tính toán đúng cách
                 inputs = {key: values.to(self.device, non_blocking=True) for key, values in inputs.items()}
                 labels = labels.to(self.device, dtype=torch.long, non_blocking=True).reshape(-1,)
 
-                # Lấy đầu ra từ mô hình
                 outputs = self.model(**inputs)
-                # Đảm bảo rằng 'logits' là một tensor
-                logits = outputs['logits']  # Chỉnh sửa ở đây để 'logits' là tensor, không phải list
+                logits = outputs['logits'] 
 
-                # Sử dụng topk để lấy các chỉ số của các dự đoán hàng đầu
                 top_k_predictions = torch.topk(logits, self.top_k).indices.tolist()
 
-                # Tính số lượng dự đoán đúng
                 for idx in range(labels.shape[0]):
                     if labels[idx].item() in top_k_predictions[idx]:
                         pred_correct += 1
-                
-                # Tính tổng số lượng dự đoán
+
                 pred_all += labels.shape[0]
 
-        # Tính và trả về độ chính xác
         return pred_correct, pred_all, (pred_correct / pred_all)
     
     def evaluate_per_class(self, dataloader):
