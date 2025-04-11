@@ -1,0 +1,73 @@
+task: ISLR
+data:
+  model_name: UFThreeView
+  base_url: /home/ibmelab/Documents/GG/VSLRecognition/MM-WLAuslan
+  dataset_name: VN_SIGN
+  temporal_stride: 2
+  num_output_frames: 16
+  crop_two_hand: False
+  transform_cfg:
+    index_setting:
+      - segment #train_p
+      - pad #train_m
+      - segment #test_p
+      - pad #test_m
+  vid_transform:
+    IMAGE_SIZE: 224
+    NORM_MEAN_IMGNET: [0.485, 0.456, 0.406]
+    NORM_STD_IMGNET: [0.229, 0.224, 0.225]
+  SHOULDER_DIST_EPSILON: 1.2
+  WRIST_DELTA: 0.15
+  label_folder:  Label/labelThreeViewSTU
+  # label_folder:  Label/labelThreeViewITW
+  # label_folder:  Label/labelThreeViewSYN
+  # label_folder:  Label/labelThreeViewTED
+  data_type: labels
+training:
+  test: true
+  label_smoothing: 0
+  device: cuda:0
+  overwrite: true
+  log_freq: 1
+  experiment_name: "UFThreeView MultiVSL200 w DCA S3 S4 from MaxFlow MaskFeat 0.4 (Testing)"
+  model_dir: results/vn_sign
+  random_seed: 42
+  shuffle: True
+  num_workers: 12
+  prefetch_factor: 2
+  batch_size: 1 #to-debug!
+  total_epoch: 300 #to-debug!
+  learning_rate: 0.0001
+  save_checkpoints: true
+  scheduler_factor: 0.1
+  scheduler_patience: 5
+  plot_loss: true
+  plot_lr: true
+  plot_acc: true
+  criterion: MyCustomLoss
+  optimzer: Adam
+  lr_scheduler: StepLR
+  top_k: 5
+  print_stats: true
+  pretrained: true
+  pretrained_model: None
+  lr_step_size: 10
+  gamma: 0.8
+  num_accumulation_steps: 4
+  patience: 15
+  verbose: true
+  delta: 0
+  is_early_stopping: true
+  gradient_clip_val: 1
+  w_decay: 1e-3
+  log_train_step: true
+  log_steps: 50
+  evaluate_step: 250
+  evaluate_strategy: epoch
+
+model:
+  num_classes: 199
+  embed_size: 512
+  pretraiend: False
+  co_attention: False
+  maskFeat: False

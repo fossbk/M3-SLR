@@ -1,0 +1,84 @@
+task: ISLR
+data:
+  model_name: MaskUFOneView
+  base_url: /home/ibmelab/Documents/GG/VSLRecognition/MM-WLAuslan
+  dataset_name: VN_SIGN
+  temporal_stride: 2
+  num_output_frames: 16
+  mask_ratio: 0.4
+  motion_aware_masking: true
+  transform_cfg:
+    index_setting:
+      - segment #train_p
+      - pad #train_m
+      - segment #test_p
+      - pad #test_m
+  vid_transform:
+    IMAGE_SIZE: 224
+    NORM_MEAN_IMGNET: [0.485, 0.456, 0.406]
+    NORM_STD_IMGNET: [0.229, 0.224, 0.225]
+  SHOULDER_DIST_EPSILON: 1.2
+  WRIST_DELTA: 0.15
+  label_folder: Label/labelCenterSTU
+  # label_folder: Label/labelRightSTU
+  # label_folder: Label/labelLeftSTU
+  data_type: labels
+training:
+  coefficient:
+    cls_x: 1
+    cts_x: 1
+    cosine_x: 1
+  label_smoothing: 0
+  mixup: False
+  alpha_mixup: 0.8
+  device: cuda:1
+  overwrite: true
+  log_freq: 1
+  experiment_name: "MaskUFOneView MMAuslan center MaxFlow mask ratio 0.4"
+  model_dir: results/VTNGCN/vsl
+  random_seed: 42
+  shuffle: True
+  num_workers: 12
+  prefetch_factor: 2
+  batch_size: 6 #to-debug!
+  total_epoch: 300 #to-debug!
+  learning_rate: 0.0001
+  save_checkpoints: true
+  scheduler_factor: 0.1
+  scheduler_patience: 10
+  plot_loss: true
+  plot_lr: true
+  plot_acc: true
+  criterion: MultipleMSELoss
+  optimzer: Adam
+  lr_scheduler: StepLR
+  use_gsam: false
+  gsam_alpha: 1.0      
+  rho_max: 0.6         
+  rho_min: 0.0      
+  gsam_adaptive: false
+  top_k: 5
+  print_stats: true
+  pretrained: false
+  pretrained_model: None
+  lr_step_size: 5
+  gamma: 0.8
+  num_accumulation_steps: 5
+  patience: 20
+  verbose: true
+  delta: 0
+  is_early_stopping: true
+  gradient_clip_val: 5
+  w_decay: 1e-4
+  log_train_step: true
+  log_steps: 50
+  evaluate_step: 250
+  evaluate_strategy: epoch
+
+inference:
+  batch_size: 8
+model:
+  num_classes: 0
+  maskFeat: True
+  pretraiend: True
+  pretrained_name: 'uniformer_small_k400_16x4'
