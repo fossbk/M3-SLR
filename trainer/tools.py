@@ -12,21 +12,6 @@ class EarlyStopping:
     """Early stops the training if validation loss doesn't improve or validation accuracy doesn't increase after a given patience."""
     def __init__(self, patience=7, verbose=False, delta=0, 
                  path_loss='checkpoint_loss.pt', path_acc='checkpoint_acc.pt', trace_func=print):
-        """
-        Args:
-            patience (int): Số epoch tối đa không cải thiện sau khi dừng huấn luyện.
-                            Mặc định: 7
-            verbose (bool): Nếu True, in ra thông báo mỗi khi có sự cải thiện.
-                            Mặc định: False
-            delta (float): Sự thay đổi tối thiểu trong giá trị được giám sát để xem xét là cải thiện.
-                            Mặc định: 0
-            path_loss (str): Đường dẫn để lưu checkpoint mô hình dựa trên loss.
-                            Mặc định: 'checkpoint_loss.pt'
-            path_acc (str): Đường dẫn để lưu checkpoint mô hình dựa trên accuracy.
-                            Mặc định: 'checkpoint_acc.pt'
-            trace_func (function): Hàm để in thông báo.
-                            Mặc định: print            
-        """
         self.patience = patience
         self.verbose = verbose
         self.counter_loss = 0
@@ -42,7 +27,6 @@ class EarlyStopping:
         self.trace_func = trace_func
 
     def __call__(self, val_loss, val_acc, model):
-        # Kiểm tra cải thiện của validation loss
         loss_improved = False
         acc_improved = False
 
@@ -60,7 +44,6 @@ class EarlyStopping:
             if self.verbose:
                 self.trace_func(f'EarlyStopping counter (loss): {self.counter_loss} out of {self.patience}')
 
-        # Kiểm tra cải thiện của validation accuracy
         if self.best_acc is None:
             self.best_acc = val_acc
             self.save_checkpoint_acc(val_acc, model)
@@ -75,12 +58,10 @@ class EarlyStopping:
             if self.verbose:
                 self.trace_func(f'EarlyStopping counter (acc): {self.counter_acc} out of {self.patience}')
 
-        # Kiểm tra xem có cần dừng huấn luyện không
         if self.counter_loss >= self.patience and self.counter_acc >= self.patience:
             self.early_stop = True
 
     def save_checkpoint_loss(self, val_loss, model):
-        '''Lưu mô hình khi validation loss giảm.'''
         if self.verbose:
             self.trace_func(f'Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model (loss) ...')
         if isinstance(model, torch.nn.DataParallel):
@@ -90,7 +71,6 @@ class EarlyStopping:
         self.val_loss_min = val_loss
 
     def save_checkpoint_acc(self, val_acc, model):
-        '''Lưu mô hình khi validation accuracy tăng.'''
         if self.verbose:
             self.trace_func(f'Validation accuracy increased ({self.val_acc_max:.6f} --> {val_acc:.6f}).  Saving model (acc) ...')
         if isinstance(model, torch.nn.DataParallel):
@@ -98,6 +78,7 @@ class EarlyStopping:
         else:
             torch.save(model.state_dict(), self.path_acc)
         self.val_acc_max = val_acc
+        
 class MyCustomLoss(nn.Module):
     def __init__(self, label_smoothing=0):
         super(MyCustomLoss, self).__init__()
@@ -107,7 +88,6 @@ class MyCustomLoss(nn.Module):
 
     def classification_loss_mixup(self, logits, labels_a, labels_b, lam, epoch):
         """
-        Tính classification loss với mixup:
           loss = lam * CE(logits, labels_a) + (1-lam) * CE(logits, labels_b)
         """
         loss_a = self.crossentropy(logits, labels_a)
