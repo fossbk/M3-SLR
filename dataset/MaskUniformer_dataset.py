@@ -63,27 +63,27 @@ class MaskingGenerator3D:
 class MaxFlowCubeMaskingGenerator(MaskingGenerator3D):
     def __init__(
         self,
-        mask_window_size,           # Kích thước cửa sổ: (temporal, height, width)
-        num_masking_patches,        # Số lượng patch cần mask
-        optical_flow,               # Tensor optical flow shape (temporal, height, width)
-        random_masking,             # True: ngẫu nhiên với bias, False: chọn vùng có flow cao nhất
-        min_num_patches=16,         # Số patch tối thiểu trong một cube
-        max_num_patches=None,       # Số patch tối đa trong một cube
-        min_aspect=0.3,             # Tỷ lệ khung hình tối thiểu
-        max_aspect=None             # Tỷ lệ khung hình tối đa
+        mask_window_size,           
+        num_masking_patches,        
+        optical_flow,               
+        random_masking,            
+        min_num_patches=16,         
+        max_num_patches=None,      
+        min_aspect=0.3,             
+        max_aspect=None            
     ):
         """
-        Khởi tạo MotionAwareCubeMaskingGenerator.
+        Initializes the MaxFlowCubeMaskingGenerator.
         
         Args:
-            mask_window_size (tuple): (temporal, height, width) của cửa sổ mask.
-            num_masking_patches (int): Tổng số patch cần mask.
-            optical_flow (np.ndarray): Tensor optical flow shape (temporal, height, width).
-            random_masking (bool): Chế độ tạo mask (True: ngẫu nhiên bias, False: tối đa hóa flow).
-            min_num_patches (int): Số patch tối thiểu trong cube.
-            max_num_patches (int): Số patch tối đa trong cube (nếu None, dùng window_size).
-            min_aspect (float): Tỷ lệ khung hình tối thiểu.
-            max_aspect (float): Tỷ lệ khung hình tối đa (nếu None, là 1/min_aspect).
+            mask_window_size (tuple): (temporal, height, width) of the masking window.
+            num_masking_patches (int): Total number of patches to mask.
+            optical_flow (np.ndarray): Optical flow tensor, shape (temporal, height, width).
+            random_masking (bool): Masking mode (True: biased random, False: maximize flow).
+            min_num_patches (int): Minimum number of patches per cube.
+            max_num_patches (int): Maximum number of patches per cube. If None, defaults to the total number of patches within the mask_window_size.
+            min_aspect (float): Minimum aspect ratio.
+            max_aspect (float): Maximum aspect ratio. If None, defaults to 1 / min_aspect.
         """
         super().__init__(
             mask_window_size=mask_window_size,
@@ -95,35 +95,32 @@ class MaxFlowCubeMaskingGenerator(MaskingGenerator3D):
         )
         self.optical_flow = optical_flow  # Tensor optical flow shape (temporal, height, width)
         self.random_masking = random_masking
-        
-        # Chuẩn bị phân phối xác suất từ optical flow
+
         self.flat_optical_flow = self.optical_flow.flatten()
         self.optical_flow_sum = self.flat_optical_flow.sum()
         if self.optical_flow_sum > 0:
             self.optical_flow_probs = self.flat_optical_flow / self.optical_flow_sum
         else:
-            # Nếu tất cả optical flow là 0, dùng phân phối đồng đều
             self.optical_flow_probs = np.ones_like(self.flat_optical_flow) / len(self.flat_optical_flow)
 
     def _sample_position(self, t, h, w):
         """
-        Lấy mẫu vị trí bắt đầu (front, top, left) dựa trên optical flow.
+        Samples the starting position (front, top, left) based on optical flow.
         
         Args:
-            t (int): Kích thước thời gian của cube.
-            h (int): Chiều cao của cube.
-            w (int): Chiều rộng của cube.
-            
+            t (int): Temporal dimension (or size) of the cube.
+            h (int): Height of the cube.
+            w (int): Width of the cube.
+        
         Returns:
-            tuple: (front, top, left) hoặc None nếu không hợp lệ.
+            tuple: (front, top, left) coordinates, or None if invalid.
         """
         front_max = self.temporal - t
         top_max = self.height - h
         left_max = self.width - w
         if front_max < 0 or top_max < 0 or left_max < 0:
-            return None  # Kích thước cube không hợp lệ
-        
-        # Tạo bản đồ xác suất dựa trên optical flow tại trung tâm cube
+            return None 
+
         center_t = t // 2
         center_h = h // 2
         center_w = w // 2
@@ -135,8 +132,7 @@ class MaxFlowCubeMaskingGenerator(MaskingGenerator3D):
                     ch = min(max(top + center_h, 0), self.height - 1)
                     cw = min(max(left + center_w, 0), self.width - 1)
                     prob_map[front, top, left] = self.optical_flow[ct, ch, cw]
-        
-        # Nếu tổng xác suất bằng 0, chuyển sang đồng đều
+
         if prob_map.sum() == 0:
             prob_map += 1
         prob_map = prob_map / prob_map.sum()
@@ -147,17 +143,16 @@ class MaxFlowCubeMaskingGenerator(MaskingGenerator3D):
 
     def _mask(self, mask, max_mask_patches):
         """
-        Tạo một cube mask dựa trên optical flow.
+        Creates a cube mask based on optical flow.
         
         Args:
-            mask (np.ndarray): Tensor mask hiện tại shape (temporal, height, width).
-            max_mask_patches (int): Số patch tối đa có thể thêm vào mask.
-            
+            mask (np.ndarray): The current mask tensor with shape (temporal, height, width).
+            max_mask_patches (int): The maximum number of patches that can be added to the mask.
+        
         Returns:
-            int: Số patch mới được mask (delta).
+            int: The number of newly masked patches (delta).
         """
         if self.random_masking:
-            # Chế độ ngẫu nhiên với bias theo optical flow
             for _ in range(10):
                 target_area = random.uniform(self.min_num_patches, self.max_num_patches)
                 aspect_ratio = math.exp(random.uniform(*self.log_aspect_ratio))
@@ -184,11 +179,10 @@ class MaxFlowCubeMaskingGenerator(MaskingGenerator3D):
                     return delta
             return 0
         else:
-            # Chế độ chọn cube tối đa hóa optical flow
             best_delta = 0
             best_cube = None
             best_sum = -1
-            for _ in range(100):  # Tạo 100 ứng viên
+            for _ in range(100): 
                 target_area = random.uniform(self.min_num_patches, self.max_num_patches)
                 aspect_ratio = math.exp(random.uniform(*self.log_aspect_ratio))
                 h = int(round(math.sqrt(target_area * aspect_ratio)))
@@ -205,7 +199,6 @@ class MaxFlowCubeMaskingGenerator(MaskingGenerator3D):
                 cube_mask = mask[front:front+t, top:top+h, left:left+w]
                 num_masked = cube_mask.sum()
                 if 0 < h * w * t - num_masked <= max_mask_patches:
-                    # Tính tổng optical flow trong các patch mới
                     new_flow_sum = self.optical_flow[front:front+t, top:top+h, left:left+w][cube_mask == 0].sum()
                     if new_flow_sum > best_sum:
                         best_sum = new_flow_sum
@@ -224,10 +217,10 @@ class MaxFlowCubeMaskingGenerator(MaskingGenerator3D):
 
     def __call__(self):
         """
-        Tạo mask hoàn chỉnh.
+        Generates the complete mask.
         
         Returns:
-            np.ndarray: Tensor mask shape (temporal, height, width), 1 là masked, 0 là unmasked.
+            np.ndarray: The mask tensor with shape (temporal, height, width), where 1 indicates masked and 0 indicates unmasked.
         """
         mask = np.zeros(shape=self.get_shape(), dtype=int)
         mask_count = 0
@@ -241,7 +234,6 @@ class MaxFlowCubeMaskingGenerator(MaskingGenerator3D):
         return mask
 
     def get_shape(self):
-        """Trả về kích thước của mask."""
         return self.temporal, self.height, self.width
 
 class MaskUFOneView_Dataset(Dataset):
@@ -304,25 +296,23 @@ class MaskUFOneView_Dataset(Dataset):
 
 
     def _gen_mask(self, optical_flow=None):
-        # Sinh mask theo config: sử dụng các tham số trong dataset_cfg cho MaskFeat.
-        # Ví dụ, config cần có: 'mask_feat': { 'MASK_WINDOW_SIZE': [temporal, H, W], 'MASK_RATIO': 0.4 }
         mask_window_size = [8, 7, 7] 
         mask_ratio = self.data_cfg['mask_ratio']
         num_masking_patches = round(np.prod(mask_window_size) * mask_ratio)
-        max_mask = np.prod(mask_window_size[1:])  # chỉ tính các chiều không gian
+        max_mask = np.prod(mask_window_size[1:])
         min_mask = max_mask // 5
         if optical_flow is not None:
             generator = MaxFlowCubeMaskingGenerator(
                 mask_window_size=mask_window_size,
                 num_masking_patches=num_masking_patches,
                 optical_flow=optical_flow,
-                random_masking=False,  # Có thể đổi thành False để ưu tiên vùng chuyển động
+                random_masking=False,
                 min_num_patches=min_mask,
                 max_num_patches=max_mask
             )
         else:
             generator = MaskingGenerator3D(mask_window_size, num_masking_patches, min_num_patches=min_mask, max_num_patches=max_mask)
-        mask = generator()  # numpy array
+        mask = generator()
         return torch.tensor(mask, dtype=torch.float)
 
     def __getitem__(self, idx):
