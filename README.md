@@ -14,7 +14,8 @@ SLR faces significant hurdles, notably with Visually Indistinguishable Signs (VI
 | UniFormer w MaxFlow MaskFeat | MM-WLAuslan  |   71.39   |   87.87   | [link](https://drive.google.com/drive/folders/12dScaCjePvTyxvlWElGVTYv12UFcHN9U?usp=drive_link) |
 | UsimKD                       | MM-WLAuslan  |   --.--   |   --.--   | [link](https://drive.google.com/drive/folders/12dScaCjePvTyxvlWElGVTYv12UFcHN9U?usp=drive_link) |
 | UF3V                         | MM-WLAuslan  |   82.03   |   94.58   | [link](https://drive.google.com/drive/folders/12dScaCjePvTyxvlWElGVTYv12UFcHN9U?usp=drive_link) |
-
+## Data prepare
+Please follow the instruction in [DATA.md](DATA.md)
 ## Usage
 ### Package
 Packages could be installed by:
