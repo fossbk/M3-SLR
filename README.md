@@ -1,5 +1,5 @@
 # M³-SLR
-Official implement code of [M³-SLR: Self-Supervised Pretraining with MaxFlow MaskFeat for Improved Multi-view Sign Dynamics Representation.](https://github.com/fossbk/M3-SLR/main/README.md)
+Official implement code of [M³-SLR: Self-Supervised Pretraining with MaxFlow MaskFeat for Improved Multi-view Sign Dynamics Representation.](https://github.com/fossbk/M3-SLR/tree/main)
 ## Introduction
 <img src="images/Pipeline.png">
 
