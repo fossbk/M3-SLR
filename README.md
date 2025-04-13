@@ -61,3 +61,5 @@ python3 main.py --config configs/Uniformer/test_cfg/UFThreeView_MMAuslan.yaml
 python3 main.py --config configs/Uniformer/test_cfg/UsimKD_MultiVSL200.yaml
 python3 main.py --config configs/Uniformer/test_cfg/UsimKD_MMAuslan.yaml
 ```
+## Acknowledgement
+This project is built by iBME lab at School of Electrical & Electronic Engineering, Hanoi University of Science and Technology, Vietnam. It is funded by Hanoi University of Science and Technology under project number T2023-PC-028.
