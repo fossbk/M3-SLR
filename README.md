@@ -16,7 +16,7 @@ SLR faces significant hurdles, notably with Visually Indistinguishable Signs (VI
 | UF3V                         | MM-WLAuslan  |   82.03   |   94.58   | [link](https://drive.google.com/drive/folders/1PQx1spmpH5Ih5lG4CorehDpN1pFjSs2H?usp=sharing) |
 
 Other checkpoints of UniFormer, MVitV2 and Swin with supervised training and Mixup only on Multi-VSL200 could also be found in [here](https://drive.google.com/drive/folders/1PQx1spmpH5Ih5lG4CorehDpN1pFjSs2H?usp=sharing)
-## Data prepare
+## Data preparation
 Please follow the instruction in [DATA.md](DATA.md)
 ## Usage
 ### Package
