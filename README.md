@@ -6,16 +6,21 @@ Official implement code of [M³-SLR: Self-Supervised Pretraining with MaxFlow Ma
 SLR faces significant hurdles, notably with Visually Indistinguishable Signs (VISigns) – signs that appear identical from a single viewpoint – and the practical challenge of deploying computationally expensive multi-view systems on single cameras. This project introduces M³-SLR, a comprehensive framework designed to tackle these issues. The core proposal involves three key innovations: (1) a novel optical flow-guided MaxFlow Cube Masking strategy for MaskFeat pretraining method to compel models to learn fine-grained sign dynamics crucial for distinguishing similar signs, (2) an effective multi-view architecture, UF3V with Dual Co-Attention, specifically designed to fuse information from multiple viewpoints and resolve ambiguities like VISigns, and (3) an efficient knowledge distillation process to transfer the enhanced capabilities of the multi-view system into a high-performance, practical single-view model capable of distinguishing VISigns despite single-view input. The ultimate goal of M³-SLR is to significantly improve robustness against ambiguous signs and deliver a state-of-the-art SLR model suitable for real-world, single-camera applications.
 
 ## Performance
- Model                         |   Dataset    | Top-1 | Top-5 | Checkpoint | 
-|------------------------------|--------------|-----------|-----------|------------|
-| UniFormer w MaxFlow MaskFeat | Multi-VSL200 |   86.37   |   96.94   | [link](https://drive.google.com/drive/folders/1WIv8MRgLc3MurnT1ApSN9w7KtU8A7ow2?usp=drive_link) |
-| UsimKD                       | Multi-VSL200 |   88.14   |   96.28   | [link](https://drive.google.com/drive/folders/1bL7kGwUJRzRsATXZSXBH6-3YnGuKQDaX?usp=drive_link) |
-| UF3V                         | Multi-VSL200 |   92.11   |   97.90   | [link](https://drive.google.com/drive/folders/1FuoiVl-v1GVkpH2HGtqWhY6NteahDKKG?usp=drive_link) |
-| UniFormer w MaxFlow MaskFeat | MM-WLAuslan  |   71.39   |   87.87   | [link](https://drive.google.com/drive/folders/1kFlA7Uf6_D2fWSMb0LA0h8d_l9b0_TLB?usp=drive_link) |
-| UsimKD                       | MM-WLAuslan  |   --.--   |   --.--   | [link](https://drive.google.com/drive/folders/1pJ6hadjbVxV8-S6eD0_Q0btNwFsS2hJt?usp=drive_link) |
-| UF3V                         | MM-WLAuslan  |   82.03   |   94.58   | [link](https://drive.google.com/drive/folders/1KLaA2XchXrU_RDS4F92Tj2dXEoH5mKAS?usp=drive_link) |
+### Multi-VSL200
+ Model                         | Top-1 | Top-5 | Checkpoint | 
+|------------------------------|-----------|-----------|------------|
+| UniFormer w MaxFlow MaskFeat |   86.37   |   96.94   | [link](https://drive.google.com/drive/folders/1WIv8MRgLc3MurnT1ApSN9w7KtU8A7ow2?usp=drive_link) |
+| UsimKD                       |   88.14   |   96.28   | [link](https://drive.google.com/drive/folders/1bL7kGwUJRzRsATXZSXBH6-3YnGuKQDaX?usp=drive_link) |
+| UF3V                         |   92.11   |   97.90   | [link](https://drive.google.com/drive/folders/1FuoiVl-v1GVkpH2HGtqWhY6NteahDKKG?usp=drive_link) |
 
 Other checkpoints of UniFormer, MVitV2 and Swin with supervised training and Mixup only on Multi-VSL200 could also be found in [here](https://drive.google.com/drive/folders/10JT8DZWSI3flcRV2NoDStKhAuSZgPGuz?usp=drive_link)
+### MM-WLAuslan
+Model                          | STU Top-1 | STU Top-5 | ITW Top-1 | ITW Top-5 | SYN Top-1 | SYN Top-5 | TED Top-1 | TED Top-5 | AVG. Top-1 | AVG. Top-5 | Checkpoint |
+|------------------------------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|------------|------------|------------|
+| UniFormer w MaxFlow MaskFeat |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |    -----   |    -----   | [link](https://drive.google.com/drive/folders/1kFlA7Uf6_D2fWSMb0LA0h8d_l9b0_TLB?usp=drive_link) |
+| UsimKD                       |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |    -----   |    -----   | [link](https://drive.google.com/drive/folders/1pJ6hadjbVxV8-S6eD0_Q0btNwFsS2hJt?usp=drive_link) |
+| UF3V                         |   91.49   |   98.98   |   71.13   |   88.90   |   75.35   |   91.99   |   90.14   |   98.46   |    82.03   |    94.58   | [link](https://drive.google.com/drive/folders/1KLaA2XchXrU_RDS4F92Tj2dXEoH5mKAS?usp=drive_link) |
+
 ## Data preparation
 Please follow the instruction in [DATA.md](DATA.md)
 ## Usage
