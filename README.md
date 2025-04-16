@@ -17,8 +17,8 @@ Other checkpoints of UniFormer, MVitV2 and Swin with supervised training and Mix
 ### MM-WLAuslan
 Model                          | STU Top-1 | STU Top-5 | ITW Top-1 | ITW Top-5 | SYN Top-1 | SYN Top-5 | TED Top-1 | TED Top-5 | AVG. Top-1 | AVG. Top-5 | Checkpoint |
 |------------------------------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|------------|------------|------------|
-| UniFormer w MaxFlow MaskFeat |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |    -----   |    -----   | [link](https://drive.google.com/drive/folders/1kFlA7Uf6_D2fWSMb0LA0h8d_l9b0_TLB?usp=drive_link) |
-| UsimKD                       |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |   -----   |    -----   |    -----   | [link](https://drive.google.com/drive/folders/1pJ6hadjbVxV8-S6eD0_Q0btNwFsS2hJt?usp=drive_link) |
+| UniFormer w MaxFlow MaskFeat |   84.78   |   97.29   |   52.51   |   74.21   |   64.07   |   86.32   |   84.18   |   96.67   |    71.39   |    87.87   | [link](https://drive.google.com/drive/folders/1kFlA7Uf6_D2fWSMb0LA0h8d_l9b0_TLB?usp=drive_link) |
+| UsimKD                       |   85.93   |   97.90   |   59.10   |   80.87   |   67.33   |   88.77   |   85.33   |   97.23   |    74.42   |    91.19   | [link](https://drive.google.com/drive/folders/1pJ6hadjbVxV8-S6eD0_Q0btNwFsS2hJt?usp=drive_link) |
 | UF3V                         |   91.49   |   98.98   |   71.13   |   88.90   |   75.35   |   91.99   |   90.14   |   98.46   |    82.03   |    94.58   | [link](https://drive.google.com/drive/folders/1KLaA2XchXrU_RDS4F92Tj2dXEoH5mKAS?usp=drive_link) |
 
 ## Data preparation
