@@ -13,7 +13,6 @@ SLR faces significant hurdles, notably with Visually Indistinguishable Signs (VI
 | UsimKD                       |   88.14   |   96.28   | [link](https://drive.google.com/drive/folders/1bL7kGwUJRzRsATXZSXBH6-3YnGuKQDaX?usp=drive_link) |
 | UF3V                         |   92.11   |   97.90   | [link](https://drive.google.com/drive/folders/1FuoiVl-v1GVkpH2HGtqWhY6NteahDKKG?usp=drive_link) |
 
-Other checkpoints of UniFormer, MVitV2 and Swin with supervised training and Mixup only on Multi-VSL200 could also be found in [here](https://drive.google.com/drive/folders/10JT8DZWSI3flcRV2NoDStKhAuSZgPGuz?usp=drive_link)
 ### MM-WLAuslan
 Model                          | STU Top-1 | STU Top-5 | ITW Top-1 | ITW Top-5 | SYN Top-1 | SYN Top-5 | TED Top-1 | TED Top-5 | AVG. Top-1 | AVG. Top-5 | Checkpoint |
 |------------------------------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|------------|------------|------------|
